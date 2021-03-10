@@ -1,0 +1,71 @@
+body {
+  overflow: hidden;
+  font-family: Helvetica, sans serif;
+}
+input {
+  border-style: solid;
+  border-width: 0px 0px 1px;
+  border-color: #dcdcdc;
+}
+input:hover,
+input:active,
+input:focus {
+  border-color: #454545;
+}
+input[disabled] {
+  background: #cdcdcd;
+  border-color: #dcdcdc;
+}
+#pin {
+  height: 0;
+  width: 0;
+  position: relative;
+  left: 80px;
+  margin-bottom: 0px;
+  border: 20px solid;
+  border-color: transparent transparent black;
+  transform: rotate(180deg);
+}
+#circle {
+  width: 200px;
+  height: 200px;
+  background: url(https://banner2.cleanpng.com/20180529/alb/kisspng-color-wheel-wikipedia-encyclopedia-wheel-of-fortune-5b0cd19a3fcf83.3492625715275667462614.jpg)
+    center center;
+  background-size: 250px 200px;
+  transition: transform ease-in-out 10s;
+  transform: rotate(0deg);
+  border-radius: 100%;
+  font-size: 100px;
+  line-height: 100px;
+  vertical-align: top;
+  text-align: center;
+  box-shadow: 0px 0px 20px 5px #333333;
+}
+
+#risposta {
+  display: none;
+}
+.cella {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  margin: 3px;
+  background: pink;
+  font-size: 20px;
+  text-align: center;
+  vertical-align: middle;
+}
+.cella.lettera {
+  background: green;
+  color: white;
+}
+#lettera {
+  width: 15px;
+}
+
+.punteggio {
+  text-align: center;
+  box-shadow: 1px 1px 5px #333;
+  margin-right: 10px;
+}

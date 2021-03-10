@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Ruota della fortuna</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+  <button id="inizia_gioco" onClick="inizia_gioco()">Inizia Gioco</button>
+  <button id="gira" disabled onClick="gira()">GIRA!!</button>
+  <button id="prossimo_giocatore" disabled onClick="prossimo_giocatore()">Prossimo giocatore ></button>
+  <button id="cambia_frase" disabled onClick="cambia_frase()">cambia frase</button>
+
+  <!--Il form serve per poter mandare la lettera semplicemente premendo il tasto invio-->
+  <form onsubmit="cerca_lettera()">
+    <input type="text" id="lettera" maxlength="1" disabled />
+    <input type="submit" id="cerca_lettera" disabled value="cerca lettera">
+  </form>
+  <input type="text" id="input_soluzione" disabled />
+  <button id="soluzione" disabled onClick="soluzione()">soluzione</button>
+  <section>
+    <h2>Esempio per passaggio del turno di gioco</h2>
+    <label>Ora è il turno del giocatore:</label>
+    <span id="giocatore_attivo"></span>
+    <br />
+  </section>
+
+  <section>
+    <h2>Esempio di rotazione</h2>
+    <div id="pin"></div>
+    <div id="circle"></div>
+    <!-- div id="circle"></div -->
+    <span>valore della ruota:</span>
+    <span id="valore_ruota"></span>
+  </section>
+
+  <section id="punteggio">
+    <h2>Esempio di tabellone</h2>
+    <div id="tabellone"></div>
+    <br>
+    <label>punteggio:</label>
+    <!--<input type="text" id="punteggio0" size=4 class="punteggio" readonly />
+    <input type="text" id="punteggio1" size=4 class="punteggio" readonly />
+    <input type="text" id="punteggio2" size=4 class="punteggio" readonly />-->
+  </section>
+
+  <audio id="audio">
+
+  </audio>
+  <script src="./functions.js"></script>
+</body>
+
+</html>
