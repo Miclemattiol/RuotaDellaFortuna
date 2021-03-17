@@ -33,22 +33,22 @@ function acquistaLettera() {
   var punteggio = document.getElementById("punteggio" + giocatore_attivo);
   if (parseInt(punteggio.value) >= prezzoLettera) {
     punteggio.value = parseInt(punteggio.value) - prezzoLettera;
-  }
-  var celle = document.getElementsByClassName("cella ");
-  var tmp;
-  for (var i = 0; i < frase_attiva.length && tmp == null; i++) {
-    if (celle[i].innerText == "") {
-      tmp = i;
+    var celle = document.getElementsByClassName("cella ");
+    var tmp;
+    for (var i = 0; i < frase_attiva.length && tmp == null; i++) {
+      if (celle[i].innerText == "") {
+        tmp = i;
+      }
     }
-  }
-  if (tmp < frase_attiva.length) {
-    var lettera = frase_attiva[tmp];
-    //var moltiplicatore = 0;
-    //var trovata_lettera = false;
-    for (var i = 0; i < frase_attiva.length; i++) {
-      if (frase_attiva[i] == lettera && celle[i].innerText == "") {
-        //moltiplicatore = moltiplicatore + 1;
-        celle[i].innerText = lettera;
+    if (tmp < frase_attiva.length) {
+      var lettera = frase_attiva[tmp];
+      //var moltiplicatore = 0;
+      //var trovata_lettera = false;
+      for (var i = 0; i < frase_attiva.length; i++) {
+        if (frase_attiva[i] == lettera && celle[i].innerText == "") {
+          //moltiplicatore = moltiplicatore + 1;
+          celle[i].innerText = lettera;
+        }
       }
     }
   }
