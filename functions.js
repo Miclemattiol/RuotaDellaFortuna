@@ -4,6 +4,8 @@ var giocatore_attivo;
 var frase_attiva;
 var valore_ruota = 0;
 var giocatori = [];
+var vocali = ['A', 'E', 'I', 'O', 'U'];
+var prezzoLettera = 5;
 
 setPlayers();
 var punteggi = [0, 0, 0];
@@ -19,11 +21,37 @@ var bottone_inizia = document.getElementById("inizia_gioco");
 var bottone_gira = document.getElementById("gira");
 var bottone_soluzione = document.getElementById("soluzione");
 var bottone_scegli_lettera = document.getElementById("cerca_lettera");
+var bottone_acquista_lettera = document.getElementById("acquistaLettera");
 var input_lettera = document.getElementById("lettera");
 var input_soluzione = document.getElementById("input_soluzione");
 
 function sleep(ms) {  //Serve per impostare un tempo di ritardo
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function acquistaLettera() {
+  var punteggio = document.getElementById("punteggio" + giocatore_attivo);
+  if (parseInt(punteggio.value) >= prezzoLettera) {
+    punteggio.value = parseInt(punteggio.value) - prezzoLettera;
+  }
+  var celle = document.getElementsByClassName("cella ");
+  var tmp;
+  for (var i = 0; i < frase_attiva.length && tmp == null; i++) {
+    if (celle[i].innerText == "") {
+      tmp = i;
+    }
+  }
+  if (tmp < frase_attiva.length) {
+    var lettera = frase_attiva[tmp];
+    //var moltiplicatore = 0;
+    //var trovata_lettera = false;
+    for (var i = 0; i < frase_attiva.length; i++) {
+      if (frase_attiva[i] == lettera && celle[i].innerText == "") {
+        //moltiplicatore = moltiplicatore + 1;
+        celle[i].innerText = lettera;
+      }
+    }
+  }
 }
 
 function getRandomInt(min, max) {
@@ -34,16 +62,21 @@ function getRandomInt(min, max) {
 /**
  * La funzione serve a richiedere tramite un prompt quanti giocatori ci sono e successivamente impostarli all'interno del vettore dei giocatori
  */
-function setPlayers(){
+function setPlayers() {
   var nGiocatori;
-  do{ //Chiedo il numero di giocatori finchè questo non è un numero intero maggiore o uguale a 2
+  do { //Chiedo il numero di giocatori finchè questo non è un numero intero maggiore o uguale a 2
     nGiocatori = prompt("Inserisci il numero di giocatori:", 2);
-  }while(isNaN(nGiocatori) || nGiocatori<2);
+  } while (isNaN(nGiocatori) || nGiocatori < 2);
   nGiocatori = parseInt(nGiocatori);
-  var punteggi = document.getElementById("punteggio");
-  for(let i=0; i<nGiocatori; i++){  //Chiedo i nomi ai giocatori e creo una casella per i suoi punteggi
-    giocatori[i] = prompt("Giocatore "+ i + " inserisci il tuo nome: ", "Giocatore " + i);
-    punteggi.innerHTML+="<input type=\"text\" id=\"punteggio" + i + "\" size=4 class=\"punteggio\" readonly />";
+  //var punteggi = document.getElementById("punteggio");
+  var tmpPlayers = document.getElementById("giocatori");
+  for (let i = 0; i < nGiocatori; i++) {  //Chiedo i nomi ai giocatori e creo una casella per i suoi punteggi
+    giocatori[i] = prompt("Giocatore " + i + " inserisci il tuo nome: ", "Giocatore " + i);
+    tmpPlayers.innerHTML +=
+      "<li>" +
+      "<input type=\"text\" id=\"punteggio" + i + "\" size=4 class=\"punteggio\" readonly value=\"0\"/>" + "<span id=\"giocatore" + i + "\">" + giocatori[i] + "</span>" +
+      "</li>\t";
+    //punteggi.innerHTML+="<input type=\"text\" id=\"punteggio" + i + "\" size=4 class=\"punteggio\" readonly />";
   }
 }
 
@@ -51,7 +84,8 @@ function inizia_gioco() {
   seleziona_frase();
   crea_tabellone();
   giocatore_attivo = 0;
-  document.getElementById("giocatore_attivo").innerText = giocatori[giocatore_attivo];
+  //document.getElementById("giocatore_attivo").innerText = giocatori[giocatore_attivo];
+  document.getElementById("giocatore" + giocatore_attivo).style.fontWeight = "bold";
   bottone_gira.disabled = false;
   bottone_inizia.disabled = true;
 }
@@ -71,7 +105,12 @@ function crea_tabellone() {
   var celle = document.getElementsByClassName("cella");
   for (var i = 0; i < celle.length; i++) {
     if (frase_attiva[i] != " ") {
-      celle[i].className = celle[i].className + " lettera";
+      //console.log(vocali.indexOf(frase_attiva[i]));
+      if (vocali.indexOf(frase_attiva[i].toUpperCase()) != -1) {
+        celle[i].className = celle[i].className + " consonante";
+      } else {
+        celle[i].className = celle[i].className + " vocale";
+      }
     }
   }
 }
@@ -86,11 +125,12 @@ function gira() {
   //circle.classList.add("start");
   circle.style.transitionProperty = "transform";
   circle.style.transitionDuration = "3s";
-  circle.style.transform = "rotate(-" + gradi + "deg)";
+  circle.style.transform = "translateX(-50%) rotate(-" + gradi + "deg)";
   sleep(3000).then(() => {
     valore_ruota = valori_ruota[posizione_ruota];
     document.getElementById("valore_ruota").innerText = valore_ruota;
     bottone_scegli_lettera.disabled = false;
+    bottone_acquista_lettera.disabled = false;
     input_lettera.disabled = false;
   });
   bottone_gira.disabled = true;
@@ -101,22 +141,25 @@ function reset_ruota() {
   circle.style.transitionProperty = "none";
   circle.style.transitionDuration = "0s";
   circle.offsetHeight;
-  circle.style.transform = "rotate(0deg)";
+  circle.style.transform = "translateX(-50%) rotate(0deg)";
 }
 
 function prossimo_giocatore() {
+  document.getElementById("giocatore" + giocatore_attivo).style.fontWeight = "normal";
   giocatore_attivo = (giocatore_attivo + 1) % giocatori.length;
-  document.getElementById("giocatore_attivo").innerText =
-    giocatori[giocatore_attivo];
+  //document.getElementById("giocatore_attivo").innerText = giocatori[giocatore_attivo];
+  document.getElementById("giocatore" + giocatore_attivo).style.fontWeight = "bold";
   reset_ruota();
   bottone_gira.disabled = false;
   bottone_scegli_lettera.disabled = true;
+  bottone_acquista_lettera.disabled = true;
   input_lettera.disabled = true;
 }
 
 function prossima_lettera() {
   bottone_gira.disabled = false;
   bottone_scegli_lettera.disabled = true;
+  bottone_acquista_lettera.disabled = true;
   bottone_soluzione.disabled = false;
   input_lettera.disabled = true;
   input_soluzione.disabled = false;
@@ -130,27 +173,29 @@ function cambia_frase() {
 
 function cerca_lettera() {
   var lettera = document.getElementById("lettera").value.toUpperCase();
-  var moltiplicatore = 0;
-  var trovata_lettera = false;
-  var celle = document.getElementsByClassName("cella ");
-  for (var i = 0; i < frase_attiva.length; i++) {
-    if (frase_attiva[i] == lettera && celle[i].innerText == "") {
-      moltiplicatore = moltiplicatore + 1;
-      celle[i].innerText = lettera;
+  if (lettera != "") {
+    var moltiplicatore = 0;
+    //var trovata_lettera = false;
+    var celle = document.getElementsByClassName("cella ");
+    for (var i = 0; i < frase_attiva.length; i++) {
+      if (frase_attiva[i] == lettera && celle[i].innerText == "") {
+        moltiplicatore = moltiplicatore + 1;
+        celle[i].innerText = lettera;
+      }
     }
+    aggiorna_punteggio(valore_ruota * moltiplicatore);
+    if (moltiplicatore == 0) {
+      prossimo_giocatore();
+    } else {
+      prossima_lettera();
+    }
+    document.getElementById("lettera").value = "";
   }
-  aggiorna_punteggio(valore_ruota * moltiplicatore);
-  if (moltiplicatore == 0) {
-    prossimo_giocatore();
-  } else {
-    prossima_lettera();
-  }
-  document.getElementById("lettera").value = "";
 }
 
 function aggiorna_punteggio(x) {
   var punteggio = document.getElementById("punteggio" + giocatore_attivo);
-  punteggio.value = punteggio.value + x;
+  punteggio.value = parseInt(punteggio.value) + x;
 }
 
 function soluzione() {
@@ -162,7 +207,7 @@ function soluzione() {
       "Il giocatore " +
       giocatori[giocatore_attivo] +
       " ha indovinato la frase. Ha vinto: " +
-      punteggio +
+      punteggio + "" +
       "€."
     );
     bottone_gira.disabled = true;
