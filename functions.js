@@ -4,8 +4,9 @@ var giocatore_attivo;
 var frase_attiva;
 var valore_ruota = 0;
 var giocatori = [];
+let jolly = [];
 var vocali = ['A', 'E', 'I', 'O', 'U'];
-var prezzoLettera = 5;
+const PREZZOLETTERA = 5;  //PREZZO LETTERA
 
 setPlayers();
 var punteggi = [0, 0, 0];
@@ -31,8 +32,8 @@ function sleep(ms) {  //Serve per impostare un tempo di ritardo
 
 function acquistaLettera() {
   var punteggio = document.getElementById("punteggio" + giocatore_attivo);
-  if (parseInt(punteggio.value) >= prezzoLettera) {
-    punteggio.value = parseInt(punteggio.value) - prezzoLettera;
+  if (parseInt(punteggio.value) >= PREZZOLETTERA) {
+    punteggio.value = parseInt(punteggio.value) - PREZZOLETTERA;
     var celle = document.getElementsByClassName("cella ");
     var tmp;
     for (var i = 0; i < frase_attiva.length && tmp == null; i++) {
@@ -127,13 +128,32 @@ function gira() {
   circle.style.transitionDuration = "3s";
   circle.style.transform = "translateX(-50%) rotate(-" + gradi + "deg)";
   sleep(3000).then(() => {
-    valore_ruota = valori_ruota[posizione_ruota];
-    document.getElementById("valore_ruota").innerText = valore_ruota;
-    bottone_scegli_lettera.disabled = false;
-    bottone_acquista_lettera.disabled = false;
-    input_lettera.disabled = false;
+    valore_ruota = valori_ruota[posizione_ruota] + 1;
+    if (valore_ruota == 6) {
+      console.log("5 DIO CAN");
+      jolly[giocatore_attivo] = true;
+    } else if (valore_ruota == 12) {
+      console.log("12 DIO CAN");
+      if (jolly[giocatore_attivo]) {
+        jolly[giocatore_attivo] = false;
+      } else {
+        aggiorna_punteggio(0, true);
+      }
+    } else if (valore_ruota < 6) {
+      document.getElementById("valore_ruota").innerText = valore_ruota;
+      bottone_scegli_lettera.disabled = false;
+      bottone_acquista_lettera.disabled = false;
+      input_lettera.disabled = false;
+      bottone_gira.disabled = true;
+    } else {
+      document.getElementById("valore_ruota").innerText = valore_ruota-1;
+      bottone_scegli_lettera.disabled = false;
+      bottone_acquista_lettera.disabled = false;
+      input_lettera.disabled = false;
+      bottone_gira.disabled = true;
+    }
+
   });
-  bottone_gira.disabled = true;
   document.getElementById("audio").play();
 }
 
@@ -193,9 +213,14 @@ function cerca_lettera() {
   }
 }
 
-function aggiorna_punteggio(x) {
+function aggiorna_punteggio(x, override = false) {
   var punteggio = document.getElementById("punteggio" + giocatore_attivo);
-  punteggio.value = parseInt(punteggio.value) + x;
+  if (override) {
+    punteggio.value = x;
+  } else {
+    punteggio.value = parseInt(punteggio.value) + x;
+  }
+
 }
 
 function soluzione() {

@@ -192,7 +192,7 @@ header h1{
     position: relative;
     width: var(--circleDim);
     height: var(--circleDim);
-    background: url(https://banner2.cleanpng.com/20180529/alb/kisspng-color-wheel-wikipedia-encyclopedia-wheel-of-fortune-5b0cd19a3fcf83.3492625715275667462614.jpg)
+    background: url(./Ruota.jpg)
       center center;
     background-size: calc(var(--circleDim) * 1.5);
     transition: transform ease-in-out 10s;
