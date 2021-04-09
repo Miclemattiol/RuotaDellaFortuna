@@ -16,7 +16,10 @@ var frasi = ["Sono una frase"];
  */
 var gradi_per_spicchio = 30;
 var numero_spicchi = 12;
-var valori_ruota = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+var jollyString = "V";
+var loseString = "F";
+var valori_ruota = [2, 3, 4, 5, loseString, 6, 7, 8, 9, 10, jollyString, 1];
 
 var bottone_inizia = document.getElementById("inizia_gioco");
 var bottone_gira = document.getElementById("gira");
@@ -25,27 +28,28 @@ var bottone_scegli_lettera = document.getElementById("cerca_lettera");
 var bottone_acquista_lettera = document.getElementById("acquistaLettera");
 var input_lettera = document.getElementById("lettera");
 var input_soluzione = document.getElementById("input_soluzione");
+var circle = document.getElementById("circle");
 
 function sleep(ms) {  //Serve per impostare un tempo di ritardo
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function acquistaLettera() {
-  var punteggio = document.getElementById("punteggio" + giocatore_attivo);
+  let punteggio = document.getElementById("punteggio" + giocatore_attivo);
   if (parseInt(punteggio.value) >= PREZZOLETTERA) {
     punteggio.value = parseInt(punteggio.value) - PREZZOLETTERA;
-    var celle = document.getElementsByClassName("cella ");
-    var tmp;
-    for (var i = 0; i < frase_attiva.length && tmp == null; i++) {
+    let celle = document.getElementsByClassName("cella ");
+    let tmp;
+    for (let i = 0; i < frase_attiva.length && tmp == null; i++) {
       if (celle[i].innerText == "") {
         tmp = i;
       }
     }
     if (tmp < frase_attiva.length) {
-      var lettera = frase_attiva[tmp];
+      let lettera = frase_attiva[tmp];
       //var moltiplicatore = 0;
       //var trovata_lettera = false;
-      for (var i = 0; i < frase_attiva.length; i++) {
+      for (let i = 0; i < frase_attiva.length; i++) {
         if (frase_attiva[i] == lettera && celle[i].innerText == "") {
           //moltiplicatore = moltiplicatore + 1;
           celle[i].innerText = lettera;
@@ -64,13 +68,13 @@ function getRandomInt(min, max) {
  * La funzione serve a richiedere tramite un prompt quanti giocatori ci sono e successivamente impostarli all'interno del vettore dei giocatori
  */
 function setPlayers() {
-  var nGiocatori;
+  let nGiocatori;
   do { //Chiedo il numero di giocatori finchè questo non è un numero intero maggiore o uguale a 2
     nGiocatori = prompt("Inserisci il numero di giocatori:", 2);
   } while (isNaN(nGiocatori) || nGiocatori < 2);
   nGiocatori = parseInt(nGiocatori);
   //var punteggi = document.getElementById("punteggio");
-  var tmpPlayers = document.getElementById("giocatori");
+  let tmpPlayers = document.getElementById("giocatori");
   for (let i = 0; i < nGiocatori; i++) {  //Chiedo i nomi ai giocatori e creo una casella per i suoi punteggi
     giocatori[i] = prompt("Giocatore " + i + " inserisci il tuo nome: ", "Giocatore " + i);
     tmpPlayers.innerHTML +=
@@ -92,19 +96,19 @@ function inizia_gioco() {
 }
 
 function seleziona_frase() {
-  var indice_frase_attiva = getRandomInt(0, frasi.length);
+  let indice_frase_attiva = getRandomInt(0, frasi.length);
   frase_attiva = frasi[indice_frase_attiva].toUpperCase();
 }
 
 function crea_tabellone() {
-  var tabellone = document.getElementById("tabellone");
-  var html = "";
-  for (var i = 0; i < frase_attiva.length; i++) {
+  let tabellone = document.getElementById("tabellone");
+  let html = "";
+  for (let i = 0; i < frase_attiva.length; i++) {
     html = html + '<span class="cella" id="id' + i + '"></span>';
   }
   tabellone.innerHTML = html;
-  var celle = document.getElementsByClassName("cella");
-  for (var i = 0; i < celle.length; i++) {
+  let celle = document.getElementsByClassName("cella");
+  for (let i = 0; i < celle.length; i++) {
     if (frase_attiva[i] != " ") {
       //console.log(vocali.indexOf(frase_attiva[i]));
       if (vocali.indexOf(frase_attiva[i].toUpperCase()) != -1) {
@@ -117,50 +121,53 @@ function crea_tabellone() {
 }
 
 function gira() {
+  //prossima_lettera();
   reset_ruota();
-  var posizione_ruota = getRandomInt(0, numero_spicchi);
-  console.log(posizione_ruota);
-  var gradi =
-    posizione_ruota * gradi_per_spicchio + 3600 + gradi_per_spicchio / 2;
-  var circle = document.getElementById("circle");
-  //circle.classList.add("start");
-  circle.style.transitionProperty = "transform";
-  circle.style.transitionDuration = "3s";
-  circle.style.transform = "translateX(-50%) rotate(-" + gradi + "deg)";
-  sleep(3000).then(() => {
-    valore_ruota = valori_ruota[posizione_ruota] + 1;
-    if (valore_ruota == 6) {
-      console.log("5 DIO CAN");
-      jolly[giocatore_attivo] = true;
-    } else if (valore_ruota == 12) {
-      console.log("12 DIO CAN");
-      if (jolly[giocatore_attivo]) {
-        jolly[giocatore_attivo] = false;
-      } else {
-        aggiorna_punteggio(0, true);
-      }
-    } else if (valore_ruota < 6) {
-      document.getElementById("valore_ruota").innerText = valore_ruota;
-      bottone_scegli_lettera.disabled = false;
-      bottone_acquista_lettera.disabled = false;
-      input_lettera.disabled = false;
-      bottone_gira.disabled = true;
-    } else {
-      document.getElementById("valore_ruota").innerText = valore_ruota-1;
-      bottone_scegli_lettera.disabled = false;
-      bottone_acquista_lettera.disabled = false;
-      input_lettera.disabled = false;
-      bottone_gira.disabled = true;
-    }
+    let posizione_ruota = getRandomInt(0, numero_spicchi);
+    console.log(posizione_ruota);
+    let gradi =
+      posizione_ruota * gradi_per_spicchio + 3600 + gradi_per_spicchio / 2;
+    //circle.classList.add("start");
+    circle.style.transitionProperty = "transform";
+    circle.style.transitionDuration = "3s";
+    circle.style.transform = "translateX(-50%) rotate(-" + gradi + "deg)";
+    sleep(3000).then(() => {
+      valore_ruota = valori_ruota[posizione_ruota];
+      switch (valore_ruota) {
+        case jollyString: {
+          console.log("5 DIO CAN");
+          jolly[giocatore_attivo] = true;
+          prossima_lettera();
+        } break;
 
-  });
-  document.getElementById("audio").play();
+        case loseString: {
+          console.log("12 DIO CAN");
+          if (jolly[giocatore_attivo]) {
+            jolly[giocatore_attivo] = false;
+          } else {
+            aggiorna_punteggio(0, true);
+          }
+          prossimo_giocatore();
+
+        } break;
+
+        default: {
+          document.getElementById("valore_ruota").innerText = valore_ruota;
+          bottone_scegli_lettera.disabled = false;
+          bottone_acquista_lettera.disabled = false;
+          input_lettera.disabled = false;
+          bottone_gira.disabled = true;
+        } break;
+      }
+    });
+    //document.getElementById("audio").play();
+
 }
 
-function reset_ruota() {
+async function reset_ruota() {
   circle.style.transitionProperty = "none";
   circle.style.transitionDuration = "0s";
-  circle.offsetHeight;
+  //circle.offsetHeight;
   circle.style.transform = "translateX(-50%) rotate(0deg)";
 }
 
@@ -192,12 +199,12 @@ function cambia_frase() {
 }
 
 function cerca_lettera() {
-  var lettera = document.getElementById("lettera").value.toUpperCase();
+  let lettera = document.getElementById("lettera").value.toUpperCase();
   if (lettera != "") {
-    var moltiplicatore = 0;
+    let moltiplicatore = 0;
     //var trovata_lettera = false;
-    var celle = document.getElementsByClassName("cella ");
-    for (var i = 0; i < frase_attiva.length; i++) {
+    let celle = document.getElementsByClassName("cella ");
+    for (let i = 0; i < frase_attiva.length; i++) {
       if (frase_attiva[i] == lettera && celle[i].innerText == "") {
         moltiplicatore = moltiplicatore + 1;
         celle[i].innerText = lettera;
@@ -214,7 +221,7 @@ function cerca_lettera() {
 }
 
 function aggiorna_punteggio(x, override = false) {
-  var punteggio = document.getElementById("punteggio" + giocatore_attivo);
+  let punteggio = document.getElementById("punteggio" + giocatore_attivo);
   if (override) {
     punteggio.value = x;
   } else {
@@ -224,16 +231,15 @@ function aggiorna_punteggio(x, override = false) {
 }
 
 function soluzione() {
-  var soluzione = document.getElementById("input_soluzione").value;
+  let soluzione = document.getElementById("input_soluzione").value;
   if (frase_attiva.trim().toUpperCase() == soluzione.toUpperCase()) {
-    var punteggio = document.getElementById("punteggio" + giocatore_attivo)
+    let punteggio = document.getElementById("punteggio" + giocatore_attivo)
       .value;
     alert(
       "Il giocatore " +
       giocatori[giocatore_attivo] +
       " ha indovinato la frase. Ha vinto: " +
-      punteggio + "" +
-      "€."
+      punteggio
     );
     bottone_gira.disabled = true;
     bottone_inizia.disabled = false;
